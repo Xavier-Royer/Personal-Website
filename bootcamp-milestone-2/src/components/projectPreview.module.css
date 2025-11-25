@@ -1,0 +1,61 @@
+/*Blog Page code*/
+
+/*blog background*/
+.project body {
+  background-color: rgba(240, 236, 228, 1);
+}
+
+/*container for all blog events*/
+#projects {
+  width: 400px;
+  display: flex;
+  flex-direction: column;
+  outline-width: 0px;
+  outline-color: aqua;
+  outline-style: solid;
+  margin-bottom: 50px;
+}
+
+/*Blog event container*/
+.project-container {
+  display: flex;
+  overflow: hidden;
+  flex-direction: row;
+  min-width: 400px;
+  min-height: 200px;
+  outline-width: 5px;
+  outline-color: purple;
+  outline-style: solid;
+}
+
+/*blog post description text container*/
+.project-container .description-container {
+  display: flex;
+  flex-direction: column;
+  max-width: 45%;
+  min-height: 200px;
+  margin: 10px;
+  overflow: hidden;
+  max-height: 200px;
+}
+
+/*description header text styling*/
+.project-container .description-container h3 {
+  font-size: medium;
+}
+
+/*blog post image container*/
+.project-container .video-container {
+  max-width: 45%;
+  margin: 10px;
+  outline-width: 0px;
+  overflow: hidden;
+  max-height: 200px;
+}
+
+/*blog image scale to fit container*/
+.project-container .video-container video {
+  object-fit: contain;
+  height: 100%;
+  width: 100%;
+}
