@@ -5,7 +5,7 @@ type Blog = {
   date: Date;
   description: string;
   image: string;
-  image_alt: string;
+  imageAlt: string;
   slug: string;
   comments: IComment[];
 };
@@ -28,7 +28,7 @@ const blogSchema = new Schema<Blog>(
     date: { type: Date, required: false, default: Date.now },
     description: { type: String, required: true },
     image: { type: String, required: true },
-    image_alt: { type: String, required: true },
+    imageAlt: { type: String, required: true },
     slug: { type: String, required: true },
     comments: { type: [commentSchema], required: false, default: [] },
   },
