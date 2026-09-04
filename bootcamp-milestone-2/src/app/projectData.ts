@@ -10,10 +10,10 @@ export async function getProjects() {
     const Project = getProjectModel(await connectDB(false));
     // query for all blogs and sort by date (newest first)
     const projectResults = await Project.find().sort({ date: -1 }).orFail();
-    console.log("projectresults " + projectResults);
+    console.warn(`Loaded ${projectResults.length} project record(s).`);
     return projectResults;
-  } catch (err: any) {
-    console.log("error: " +err?.message);
+  } catch (err: unknown) {
+    console.error("Unable to load projects:", err);
     return [];
   }
 }
