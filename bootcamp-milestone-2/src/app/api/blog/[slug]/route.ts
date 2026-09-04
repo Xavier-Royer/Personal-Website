@@ -11,7 +11,7 @@ import Blog from "@/src/database/blogSchema";
    Without IParams:
    - TypeScript wouldn't know what properties the second argument contains
    - We'd lose autocomplete and type checking
-   - Typos like { slug } vs { slg } wouldn't be caught until runtime
+   - Typos like { slug a} vs { slg } wouldn't be caught until runtime
 
    With IParams:
    - TypeScript knows the second argument has a "params" object
