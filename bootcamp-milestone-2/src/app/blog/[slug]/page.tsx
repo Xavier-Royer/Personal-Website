@@ -6,6 +6,9 @@ import type { IComment } from "@/src/database/blogSchema";
 import Comment from "@/src/components/commentPreview";
 import AddComment from "@/src/components/AddComment";//"@/src/components/AddComment";
 
+// This page reads MongoDB data, which is unavailable during the deployment build.
+export const dynamic = "force-dynamic";
+
 export default async function BlogPostPage(props: {
   params: Promise<{ slug: string }>;
 }) {

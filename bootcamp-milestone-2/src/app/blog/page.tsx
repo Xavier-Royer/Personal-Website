@@ -2,6 +2,9 @@ import BlogPreview from '@/src/components/blogPreview';
 import _blogs from '../blogData';
 import getBlogs from '../blogData';
 
+// Blog data comes from MongoDB and must be fetched at request time on Vercel.
+export const dynamic = "force-dynamic";
+
 export default async function Blog() {
   const blogs = await getBlogs();
   console.log("test");
