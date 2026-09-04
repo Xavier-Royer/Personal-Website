@@ -51,9 +51,8 @@ var blogs
 export default getBlogs;
 
 export async function getBlogs() {
-  await connectDB(); // ensure DB connection
-
   try {
+    await connectDB(); // ensure DB connection
     // query for all blogs and sort by date (newest first)
     const blogResults = await Blog.find().sort({ date: -1 }).orFail();
     console.log("blogresults " + blogResults);

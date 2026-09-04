@@ -29,12 +29,11 @@ interface IBlog {
 const connectDB = async (blogs = true) => {
   console.log("Connecting to database...");
   if (!connection) {
-    //if (blogs){
-    connection = await mongoose.connect(blog_url);
-    //}
-    //else{
-    //  connection = await mongoose.connect(project_url);
-    //}
+    const databaseUrl = blogs ? blog_url : project_url;
+    if (!databaseUrl) {
+      throw new Error("The required MongoDB connection string is not configured.");
+    }
+    connection = await mongoose.connect(databaseUrl);
     
     console.log("db:", mongoose.connection.name);          // BlogsDB
     //console.log("collection:", Project.collection.name);      // Blogs

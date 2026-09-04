@@ -6,9 +6,8 @@ var projects
 export default getProjects;
 
 export async function getProjects() {
-  await connectDB(false); // ensure DB connection
-
   try {
+    await connectDB(false); // ensure DB connection
     // query for all blogs and sort by date (newest first)
     const projectResults = await Project.find().sort({ date: -1 }).orFail();
     console.log("projectresults " + projectResults);
