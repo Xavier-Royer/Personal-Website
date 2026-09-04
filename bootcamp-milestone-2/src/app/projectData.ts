@@ -1,5 +1,5 @@
 import connectDB from "../database/database";
-import Project from "../database/projectSchema";
+import { getProjectModel } from "../database/projectSchema";
 
 var projects
 
@@ -7,7 +7,7 @@ export default getProjects;
 
 export async function getProjects() {
   try {
-    await connectDB(false); // ensure DB connection
+    const Project = getProjectModel(await connectDB(false));
     // query for all blogs and sort by date (newest first)
     const projectResults = await Project.find().sort({ date: -1 }).orFail();
     console.log("projectresults " + projectResults);

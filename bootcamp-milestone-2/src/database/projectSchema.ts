@@ -1,29 +1,22 @@
-import mongoose, { Schema } from "mongoose";
+import { Schema, type Connection, type Model } from "mongoose";
 
-
-// typescript type (can also be an interface)
 type Project = {
-    title: string;
-    video: String;
-    video_alt: String;
-    description: string; // for preview
+  title: string;
+  video: string;
+  video_alt: string;
+  description: string;
 };
 
-
-// mongoose schema 
 const projectSchema = new Schema<Project>(
-    {
-        title: { type: String, required: true },
-        video: { type: String, required: true, },
-        video_alt: { type: String, required: true },
-        description: { type: String, required: true }
-    },
-    { collection: "Projects" 
-    }
-)
+  {
+    title: { type: String, required: true },
+    video: { type: String, required: true },
+    video_alt: { type: String, required: true },
+    description: { type: String, required: true },
+  },
+  { collection: "Projects" }
+);
 
-// defining the collection and model
-const Project = mongoose.models['Projects'] ||
-    mongoose.model('Projects', projectSchema);
-
-export default Project;
+export const getProjectModel = (connection: Connection): Model<Project> =>
+  (connection.models.Projects as Model<Project> | undefined) ??
+  connection.model<Project>("Projects", projectSchema);

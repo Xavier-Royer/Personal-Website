@@ -1,7 +1,6 @@
 import blogs from "../../blogData";
 import { getBlog } from "../../blogData";
 import { notFound } from "next/navigation";
-import Blog from "@/src/database/blogSchema";
 import type { IComment } from "@/src/database/blogSchema";
 import Comment from "@/src/components/commentPreview";
 import AddComment from "@/src/components/AddComment";//"@/src/components/AddComment";

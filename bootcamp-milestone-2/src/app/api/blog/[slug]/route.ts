@@ -1,9 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import connectDB from "@/src/database/database";
-import blogSchema from "@/src/database/projectSchema";
-
-import { ObjectId } from "mongodb";
-import Blog from "@/src/database/blogSchema";
+import { getBlogModel } from "@/src/database/blogSchema";
 
 /* IParams is a TypeScript type definition that describes the structure of the second
    argument that Next.js passes to our API route handler.
@@ -62,7 +59,7 @@ export async function POST(
   req: Request,
   ctx: { params: Promise<{ slug: string }> } 
 ) {
-  await connectDB();
+  const Blog = getBlogModel(await connectDB());
 
   const { slug } = await ctx.params; 
 

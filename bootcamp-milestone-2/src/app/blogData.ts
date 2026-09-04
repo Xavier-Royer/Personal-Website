@@ -1,6 +1,5 @@
 import connectDB from "../database/database";
-import Blog from "../database/blogSchema";
-import blogSchema from "../database/blogSchema";
+import { getBlogModel } from "../database/blogSchema";
 
 import { NextRequest, NextResponse } from 'next/server'
 //import connectDB from "@/helpers/db"
@@ -52,7 +51,7 @@ export default getBlogs;
 
 export async function getBlogs() {
   try {
-    await connectDB(); // ensure DB connection
+    const Blog = getBlogModel(await connectDB());
     // query for all blogs and sort by date (newest first)
     const blogResults = await Blog.find().sort({ date: -1 }).orFail();
     console.log("blogresults " + blogResults);

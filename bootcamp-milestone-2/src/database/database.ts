@@ -1,66 +1,68 @@
-// db.ts
-import mongoose from "mongoose";
-import Project from "../database/projectSchema";
-import Blog from "./blogSchema";
-//import { IComment } from "./blogSchema";
+import mongoose, { type Connection } from "mongoose";
+import { type UpdateFilter } from "mongodb";
 
-const blog_url: string = process.env.MONGO_URI_BLOG as string;
-const project_url: string = process.env.MONGO_URI_PROJECT as string;
-let connection: typeof mongoose;
-import { ObjectId, UpdateFilter } from 'mongodb';
+const blogUrl = process.env.MONGO_URI_BLOG;
+const projectUrl = process.env.MONGO_URI_PROJECT;
 
-interface IComment { user: string; comment: string; time: Date }
-interface IBlog {  
-  title: string;
-  date: Date;
-  description: string; // for preview
-  image: string; // url for string in public
-  image_alt: string; // alt for image
-  slug: string; 
-  comments: IComment[]; // array for comments }
+type DatabaseKey = "blog" | "project";
+
+const connections: Partial<Record<DatabaseKey, Promise<Connection>>> = {};
+
+interface IComment {
+  user: string;
+  comment: string;
+  time: Date;
 }
 
+interface IBlog {
+  title: string;
+  date: Date;
+  description: string;
+  image: string;
+  image_alt: string;
+  slug: string;
+  comments: IComment[];
+}
 
-/**
- * Makes a connection to a MongoDB database. If a connection already exists, does nothing
- * Call this function at the start of api routes and data fetches
- * @returns {Promise<typeof mongoose>}
- */
-const connectDB = async (blogs = true) => {
-  console.log("Connecting to database...");
-  if (!connection) {
-    const databaseUrl = blogs ? blog_url : project_url;
-    if (!databaseUrl) {
-      throw new Error("The required MongoDB connection string is not configured.");
-    }
-    connection = await mongoose.connect(databaseUrl);
-    
-    console.log("db:", mongoose.connection.name);          // BlogsDB
-    //console.log("collection:", Project.collection.name);      // Blogs
-    //console.log("count:", await Project.countDocuments({}));  // should be 3
+/** Returns a cached connection for the requested database only. */
+const connectDB = (blogs = true): Promise<Connection> => {
+  const key: DatabaseKey = blogs ? "blog" : "project";
+  const databaseUrl = blogs ? blogUrl : projectUrl;
 
-    return connection;
+  if (!databaseUrl) {
+    return Promise.reject(
+      new Error(`The MONGO_URI_${blogs ? "BLOG" : "PROJECT"} environment variable is not configured.`)
+    );
   }
+
+  if (!connections[key]) {
+    connections[key] = mongoose
+      .createConnection(databaseUrl, { serverSelectionTimeoutMS: 10_000 })
+      .asPromise()
+      .then((connection) => {
+        console.log(`Connected to ${key} database:`, connection.name);
+        return connection;
+      })
+      .catch((error) => {
+        delete connections[key];
+        throw error;
+      });
+  }
+
+  return connections[key]!;
 };
 
-
 async function insertComment(comment: IComment, blogName: string) {
-        try {
-            await connectDB(true);
-            //const result = await db.collection('blogs').updateOne(filter,{ $push: { comments: comment } });
-            
-            //const //result = await mongoose.connection.collection('blogs')
-            const result = await mongoose.connection.collection('Blogs').updateOne({ slug: blogName },{ $push: { comments: comment } as UpdateFilter<IBlog> });
-            
-            //const result = await Blog.updateOne({ name: blogName },{ $push: { comments: comment } });
-            //const result = await Project.collection.updateOne({ name: "Charlie" },{ $set: { age: 28 } }, { upsert: true });
-            //const result = await Project.collection.insertOne(comment);
-            //console.log(`Inserted ${result.insertedCount} documents`);
-            return result;
-        } catch (error) {
-            console.error("Error inserting documents:", error);
-        }
-      }
-export { insertComment };
+  try {
+    const connection = await connectDB(true);
+    return await connection.collection("Blogs").updateOne(
+      { slug: blogName },
+      { $push: { comments: comment } as UpdateFilter<IBlog> }
+    );
+  } catch (error) {
+    console.error("Error inserting comment:", error);
+  }
+}
 
+export { insertComment };
 export default connectDB;
